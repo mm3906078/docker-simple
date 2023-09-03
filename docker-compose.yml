@@ -1,0 +1,42 @@
+version: '3.8'
+services:
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: client
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 10
+    expose:
+      - '3306'
+    volumes:
+      - mysql_db_data:/var/lib/mysql
+    networks:
+      - myapp
+
+  backend-v2:
+    build: ./backend-v2
+    restart: always
+    environment:
+      host: db
+      user: admin
+      passwd: admin
+      database: client
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "80:8000"
+    networks:
+      - myapp
+
+volumes:
+  mysql_db_data:
+
+networks:
+  myapp:

@@ -27,4 +27,5 @@ docker network create myapp
 docker build -t backend:v0.2 .
 docker run -d --name mysql --network=myapp -e MYSQL_ROOT_PASSWORD=admin -e MYSQL_DATABASE=client -e MYSQL_USER=admin -e MYSQL_PASSWORD=admin mysql
 docker run --name backend --network=myapp -e host=mysql -e user=admin -e passwd=admin -e database=client -d -p 8000 backend:v0.2
+docker system prune -a
 ```
